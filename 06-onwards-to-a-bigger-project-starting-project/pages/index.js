@@ -5,7 +5,18 @@ import {Fragment} from "react";
 import Head from "next/head";
 
 function HomePage(props) {
-    return <MeetupList meetups={props.meetups} />;
+    return (
+        <Fragment>
+            <Head>
+                <title>React Meetups</title>
+                <meta
+                    name='description'
+                    content='Browse a huge list of highly active React meetups!'
+                />
+            </Head>
+            <MeetupList meetups={props.meetups} />;
+        </Fragment>
+    );
 }
 
 // export async function getServerSideProps(context) {
@@ -34,18 +45,17 @@ export async function getStaticProps() {
 
   await  client.close();
 
-    return (
-    <Fragment>
-        <Head>
-            <title>React Meetups</title>
-            <meta
-                name='description'
-                content='Browse a huge list of highly active React meetups!'
-            />
-        </Head>
-        <MeetupList meetups={props.meetups} />;
-    </Fragment>)
-
+    return {
+        props: {
+            meetups: meetups.map((meetup) => ({
+                title: meetup.title,
+                address: meetup.address,
+                image: meetup.image,
+                id: meetup._id.toString(),
+            })),
+        },
+        revalidate: 1,
+    };
 }
 
 export default HomePage;
